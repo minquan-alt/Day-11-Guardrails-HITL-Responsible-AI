@@ -1,7 +1,8 @@
 # Assignment 11: Defense-in-Depth Pipeline Report
 
-**Họ và tên:** [Điền tên của bạn]  
-**Khóa học:** AICB-P1 — AI Agent Development  
+**Họ và tên:** Hoàng Bá Minh Quang
+**MSSV:** 2A202600063
+**Lớp học:** C401
 
 ---
 
