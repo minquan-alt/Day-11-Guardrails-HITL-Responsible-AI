@@ -8,9 +8,23 @@ import re
 import textwrap
 
 from google.genai import types
-from google.adk.agents import llm_agent
-from google.adk import runners
-from google.adk.plugins import base_plugin
+try:
+    from google.adk.agents import llm_agent
+    from google.adk import runners
+    from google.adk.plugins import base_plugin
+    HAS_ADK = True
+except ImportError:
+    HAS_ADK = False
+    # Stub classes to prevent module-level crashes
+    class llm_agent:
+        class LlmAgent:
+            def __init__(self, **kwargs): pass
+    class runners:
+        class InMemoryRunner:
+            def __init__(self, **kwargs): pass
+    class base_plugin:
+        class BasePlugin:
+            def __init__(self, name=None): pass
 
 from core.utils import chat_with_agent
 
@@ -41,12 +55,12 @@ def content_filter(response: str) -> dict:
 
     # PII patterns to check
     PII_PATTERNS = {
-        # TODO: Add regex patterns for:
-        # - VN phone number: r"0\d{9,10}"
-        # - Email: r"[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}"
-        # - National ID (CMND/CCCD): r"\b\d{9}\b|\b\d{12}\b"
-        # - API key pattern: r"sk-[a-zA-Z0-9-]+"
-        # - Password pattern: r"password\s*[:=]\s*\S+"
+        "VN phone": r"0\d{9,10}",
+        "Email": r"[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}",
+        "National ID": r"\b\d{9}\b|\b\d{12}\b",
+        "API key": r"sk-[a-zA-Z0-9_-]{10,}",
+        "Password": r"password\s*[:=]\s*\S+",
+        "DB string": r"(mysql|postgres|mongodb)://\S+"
     }
 
     for name, pattern in PII_PATTERNS.items():

@@ -7,8 +7,17 @@ Lab 11 — Part 2A: Input Guardrails
 import re
 
 from google.genai import types
-from google.adk.plugins import base_plugin
-from google.adk.agents.invocation_context import InvocationContext
+try:
+    from google.adk.plugins import base_plugin
+    from google.adk.agents.invocation_context import InvocationContext
+    HAS_ADK = True
+except ImportError:
+    HAS_ADK = False
+    # Stub classes to prevent module-level crashes
+    class base_plugin:
+        class BasePlugin:
+            def __init__(self, name=None): pass
+    class InvocationContext: pass
 
 from core.config import ALLOWED_TOPICS, BLOCKED_TOPICS
 
@@ -38,9 +47,16 @@ def detect_injection(user_input: str) -> bool:
         True if injection detected, False otherwise
     """
     INJECTION_PATTERNS = [
-        # TODO: Add at least 5 regex patterns
-        # Example:
-        # r"ignore (all )?(previous|above) instructions",
+        r"ignore (all )?(previous|above|prior) instructions",
+        r"you are now\b",
+        r"(system|admin) prompt",
+        r"reveal (your )?(instructions|prompt|password|credentials)",
+        r"pretend (you are|to be)",
+        r"act as (a |an )?unrestricted",
+        r"bỏ qua (mọi |tất cả )?(hướng dẫn|lệnh)",
+        r"(fill in|complete).{0,40}(password|key|secret|credential)",
+        r"(translate|convert).{0,40}(system prompt|instructions).{0,20}(json|xml|yaml)",
+        r"write a (story|scenario).{0,60}(password|credentials|secret)",
     ]
 
     for pattern in INJECTION_PATTERNS:
@@ -70,12 +86,16 @@ def topic_filter(user_input: str) -> bool:
     """
     input_lower = user_input.lower()
 
-    # TODO: Implement logic:
     # 1. If input contains any blocked topic -> return True
-    # 2. If input doesn't contain any allowed topic -> return True
-    # 3. Otherwise -> return False (allow)
+    if any(topic.lower() in input_lower for topic in BLOCKED_TOPICS):
+        return True
 
-    pass  # Replace with your implementation
+    # 2. If input doesn't contain any allowed topic -> return True
+    if not any(topic.lower() in input_lower for topic in ALLOWED_TOPICS):
+        return True
+
+    # 3. Otherwise -> return False (allow)
+    return False
 
 
 # ============================================================

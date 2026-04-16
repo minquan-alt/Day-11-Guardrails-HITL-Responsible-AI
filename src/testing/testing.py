@@ -9,8 +9,8 @@ from dataclasses import dataclass, field
 from core.utils import chat_with_agent
 from attacks.attacks import adversarial_prompts, run_attacks
 from agents.agent import create_unsafe_agent, create_protected_agent
-from guardrails.input_guardrails import InputGuardrailPlugin
-from guardrails.output_guardrails import OutputGuardrailPlugin, _init_judge
+from src.guardrails.input_guardrails import InputGuardrailPlugin
+from src.guardrails.output_guardrails import OutputGuardrailPlugin, _init_judge
 
 
 # ============================================================

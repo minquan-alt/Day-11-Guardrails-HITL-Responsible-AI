@@ -48,7 +48,7 @@ async def part2_guardrails():
 
     # Part 2A: Input guardrails
     print("\n--- Part 2A: Input Guardrails ---")
-    from guardrails.input_guardrails import (
+    from src.guardrails.input_guardrails import (
         test_injection_detection,
         test_topic_filter,
         test_input_plugin,
@@ -61,14 +61,14 @@ async def part2_guardrails():
 
     # Part 2B: Output guardrails
     print("\n--- Part 2B: Output Guardrails ---")
-    from guardrails.output_guardrails import test_content_filter, _init_judge
+    from src.guardrails.output_guardrails import test_content_filter, _init_judge
     _init_judge()  # Initialize LLM judge if TODO 7 is done
     test_content_filter()
 
     # Part 2C: NeMo Guardrails
     print("\n--- Part 2C: NeMo Guardrails ---")
     try:
-        from guardrails.nemo_guardrails import init_nemo, test_nemo_guardrails
+        from src.guardrails.nemo_guardrails import init_nemo, test_nemo_guardrails
         init_nemo()
         await test_nemo_guardrails()
     except ImportError:
